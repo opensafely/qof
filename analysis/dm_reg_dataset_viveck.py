@@ -49,7 +49,7 @@ dataset.pat_age = patients.age_on(index_date)
 # Pass to the next rule all patients from the specified population who meet both of the criteria below:
 # Have a diabetes diagnosis in the patient record up to and including the achievement date.
 # Latest diabetes diagnosis is not followed by a diabetes resolved code.
-dataset.dm_reg_r1 = dataset.dmres_dat.is_not_null() & dataset.dmlat_dat.is_not_null() | (dataset.dmlat_dat > dataset.dmres_dat)
+dataset.dm_reg_r1 = dataset.dmres_dat.is_null() & dataset.dmlat_dat.is_not_null() | (dataset.dmlat_dat > dataset.dmres_dat)
 
 #Reject patients passed to this rule who are aged under 17 years old on the achievement date.
 dataset.dm_reg_r2 = dataset.pat_age < 17
