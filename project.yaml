@@ -11,7 +11,7 @@ actions:
       highly_sensitive:
         dataset: output/dataset.csv.gz
 
-  generate dm_reg_dataset_viveck:
+  generate_dm_reg_dataset_viveck:
     run: >
       ehrql:v1
        generate-dataset analysis/dm_reg_dataset_viveck.py
