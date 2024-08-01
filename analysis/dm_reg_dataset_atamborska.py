@@ -1,8 +1,6 @@
 # What do we need to write in the yalm.py file to "load" ehrql? ?opensafely exec ehrql:v1 generate-dataset analysis/dataset_definition.py
-#Python is case sensitive, space insensitive. How do I run one line of code from .py file at a time using codespaces
 
 #Import functions that will be used for dataset definition
-#Q: do we have to import all functions we will use? Clearly not. How do I know which functions to import?
 from ehrql import create_dataset
 from ehrql import codelist_from_csv
 
@@ -20,12 +18,11 @@ dm_cod= codelist_from_csv("codelist_path/ nhsd-primary-care-domain-refsets-dm_co
                           column="code",)
 dmres_cod= codelist_from_csv("codelist_path/nhsd-primary-care-domain-refsets-dm_codres.csv",
                             column="code",)
-# Simpler: Will a new object override the old one?
+# Simpler:
 dm_cod= codelist_from_csv("codelists/nhsd-primary-care-domain-refsets-dm_cod.csv",
                           column="code",)
 dmres_cod= codelist_from_csv("codelists/nhsd-primary-care-domain-refsets-dm_codres.csv",
                             column="code",)
-#Q: Why comma at the end? Python customary.
 
 #Create index date 
 index_date= "2024-03-31"
@@ -34,7 +31,6 @@ index_date= "2024-03-31"
 registered = practice_registrations.for_patient_on(index_date).exists_for_patient()
 
 #However, unless we add this information to the dataset, we won't be able to filter based on it, using dataset.define_population
-
 ##So first, we need to add a column to the dataset which defines which patients are registered
 dataset.registered= practice_registrations.for_patient_on(index_date).exists_for_patient()
 
@@ -47,20 +43,19 @@ pat_age = (patients.age_on(index_date) >= 17)
 #Create an object storing latest dates for Dx DM and Dx DM res for each patient
 
 ## Select the latest date with the diabetes code
-latest_dm= XeventsX.where(XeventsX.dmd_code.is_in(dm_cod)).
-sort_by(XeventX.date).
-last_for_patient()
+latest_dm= clinical_events.where(clinical_events.dmd_code.is_in(dm_cod)).
+sort_by(clinical_events.date).
+last_for_patient().date
 
 ## Select the latest date with the diabetes resolved code
-latest_dmres= XeventsX.where(XeventsX.dmd_code.is_in(dm_cod)).
-sort_by(XeventX.date).
-last_for_patient()
+latest_dmres= clinical_events.where(clinical_events.dmd_code.is_in(dmres_cod)).
+sort_by(clinical_events.date).
+last_for_patient().date
 
 
-## Q: Do we need to attach these objects to the dataset?
-#Q: Eg dataset.latest_dm= latest_dm
-#Q: eg dataset.latest_dmres= latest_dmres
-#Q: How will the dataset join these correctly>
+## Add these columns to the dataset
+dataset.latest_dm= latest_dm
+dataset.latest_dmres= latest_dmres
 
 #Define the dataset (=cohort) - using the rules
 
@@ -68,17 +63,17 @@ last_for_patient()
 ###Latest diabetes diagnosis is not followed by a diabetes resolved code.
 ###Have a diabetes diagnosis in the patient record up to and including the achievement date.
 
-dm_reg_r1= (dataset.latest_dmres < dataset.latest_dm) | (
-    dataset.latest_dm.is_not_null() & dataset.latest_dmres.is_null()
+dm_reg_r1= (dataset.latest_dmres < dataset.latest_dm) | 
+(dataset.latest_dm.is_not_null() & dataset.latest_dmres.is_null())
 
 ##Rule 2
 ### Reject patients passed to this rule who are aged under 17 years old on the achievement date. Select the remaining patients.
 
-    #dm_reg_r2= dataset.pat_age == T
+dm_reg_r2= dataset.pat_age == T
 
 
 
-# Create the population - Q: can you pass a rule to dataset.define_population or do you have to make a condition
-dataset.define_population(dm_reg_r1)
-vs. dataset.define_population(patients.date_of_birth < "1990-01-01")
+# Create the population
+dataset.define_population(dm_reg_r1 & dm_reg_r2)
+#vs. dataset.define_population(patients.date_of_birth < "1990-01-01")
 
