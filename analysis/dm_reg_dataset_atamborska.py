@@ -1,17 +1,17 @@
 # What do we need to write in the yalm.py file to "load" ehrql? ?opensafely exec ehrql:v1 generate-dataset analysis/dataset_definition.py
-#Python is case sensitive, space insensitive. How do I run a line of code at a time using codespaces
+#Python is case sensitive, space insensitive. How do I run one line of code from .py file at a time using codespaces
 
 #Import functions that will be used for dataset definition
 #Q: do we have to import all functions we will use? Clearly not. How do I know which functions to import?
 from ehrql import create_dataset
 from ehrql import codelist_from_csv
 
-#Import the tables of the variables you need
+#Import the tables of the variables which you need to define the dataset
 from ehrql.tables.tpp import patients, practice_registrations, clinical_events
 
 ## could use from ehrql.tables.core or from ehrql.tables.emis
 
-#Create an empty dataset
+#Create an empty dataset - we will be adding columns to this, based on which we filter data
 dataset = create_dataset()
 
 #Create objects containing codelists - these will be used to define the dataset
@@ -25,7 +25,7 @@ dm_cod= codelist_from_csv("codelists/nhsd-primary-care-domain-refsets-dm_cod.csv
                           column="code",)
 dmres_cod= codelist_from_csv("codelists/nhsd-primary-care-domain-refsets-dm_codres.csv",
                             column="code",)
-#Q: Why comma at the end?
+#Q: Why comma at the end? Python customary.
 
 #Create index date 
 index_date= "2024-03-31"
@@ -33,13 +33,16 @@ index_date= "2024-03-31"
 #Create a boolean vector for which patients were registered up until the index date
 registered = practice_registrations.for_patient_on(index_date).exists_for_patient()
 
-# Filter population to those registered
+#However, unless we add this information to the dataset, we won't be able to filter based on it, using dataset.define_population
+
+##So first, we need to add a column to the dataset which defines which patients are registered
+dataset.registered= practice_registrations.for_patient_on(index_date).exists_for_patient()
+
+# And only - then : Filter population to those registered
 dataset.define_population(registered)
 
 #Create a boolean vector to filter patients >17 at index date
 pat_age = (patients.age_on(index_date) >= 17)
-
-#Or should I be creating a dataset column instead?
 
 #Create an object storing latest dates for Dx DM and Dx DM res for each patient
 
