@@ -6,8 +6,6 @@ dataset = create_dataset()
 
 index_date = "2024-03-31"
 has_registration = practice_registrations.for_patient_on(index_date).exists_for_patient()
-dataset.define_population(has_registration)
-
 '''
 Extract the following columns:
 1. age at achievement date
@@ -30,3 +28,6 @@ dataset.dm_reg_r1 = (
         (dataset.dmfir_date <= index_date) & (dataset.dmlate_date.is_not_null())
         )
 dataset.dm_reg_r2 = dataset.age > 17
+
+# Filter the dataset
+dataset.define_population(has_registration & dataset.dm_reg_r1 & dataset.dm_reg_r2)
