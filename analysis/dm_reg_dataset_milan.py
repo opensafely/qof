@@ -41,8 +41,9 @@ def last_matching_event(events, codelist, where=True):
 index_date = "2024-03-31"
 dataset = create_dataset()
 
-has_registration = practice_registrations.for_patient_on(index_date).exists_for_patient()
-dataset.define_population(has_registration)
+has_registration = practice_registrations.for_patient_on(
+    index_date
+).exists_for_patient()
 
 # Extract prior events for further use in variable definitions below
 prior_events = clinical_events.where(clinical_events.date.is_on_or_before(index_date))
@@ -75,3 +76,5 @@ dataset.dm_reg_r1 = (dataset.dmres_dat < dataset.dmlat_dat) | (
 # Reject patients passed to this rule who are aged under 17 years old on the
 # achievement date.
 dataset.dm_reg_r2 = dataset.pat_age < 17
+
+dataset.define_population(has_registration & dataset.dm_reg_r1 & ~dataset.dm_reg_r2)
