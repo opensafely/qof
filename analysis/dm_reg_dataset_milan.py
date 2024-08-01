@@ -47,11 +47,6 @@ dataset.define_population(has_registration)
 # Extract prior events for further use in variable definitions below
 prior_events = clinical_events.where(clinical_events.date.is_on_or_before(index_date))
 
-# Field number: 2
-# REG_DAT: The most recent date that the patient registered for GMS, where
-# this registration occurred on or before the achievement date.
-dataset.reg_dat = practice_registrations.for_patient_on(index_date).start_date
-
 # Field number: 4
 # PAT_AGE: The age of the patient in full years at the achievement date.
 dataset.pat_age = patients.age_on(index_date)
