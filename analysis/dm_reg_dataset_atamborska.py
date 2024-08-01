@@ -1,5 +1,10 @@
-#Import function create_dataset
+# What do we need to write in the yalm.py file to "load" ehrql? ?opensafely exec ehrql:v1 generate-dataset analysis/dataset_definition.py
+#Python is case sensitive, space insensitive. How do I run a line of code at a time using codespaces
+
+#Import functions that will be used for dataset definition
+#Q: do we have to import all functions we will use? Clearly not. How do I know which functions to import?
 from ehrql import create_dataset
+from ehrql import codelist_from_csv
 
 #Import the tables of the variables you need
 from ehrql.tables.tpp import patients, practice_registrations, clinical_events
@@ -11,10 +16,16 @@ dataset = create_dataset()
 
 #Create objects containing codelists - these will be used to define the dataset
 codelist_path= Path("codelists")
-dm_cod= codelist_from_csv(codelist_path/ "nhsd-primary-care-domain-refsets-dm_cod.csv",
-    column="code",
-)
-dmres_cod= codelist_from_csv(codelist_path/"nhsd-primary-care-domain-refsets-dm_codres.csv")
+dm_cod= codelist_from_csv("codelist_path/ nhsd-primary-care-domain-refsets-dm_cod.csv",
+                          column="code",)
+dmres_cod= codelist_from_csv("codelist_path/nhsd-primary-care-domain-refsets-dm_codres.csv",
+                            column="code",)
+# Simpler: Will a new object override the old one?
+dm_cod= codelist_from_csv("codelists/nhsd-primary-care-domain-refsets-dm_cod.csv",
+                          column="code",)
+dmres_cod= codelist_from_csv("codelists/nhsd-primary-care-domain-refsets-dm_codres.csv",
+                            column="code",)
+#Q: Why comma at the end?
 
 #Create index date 
 index_date= "2024-03-31"
@@ -22,10 +33,13 @@ index_date= "2024-03-31"
 #Create a boolean vector for which patients were registered up until the index date
 registered = practice_registrations.for_patient_on(index_date).exists_for_patient()
 
+# Filter population to those registered
+dataset.define_population(registered)
+
 #Create a boolean vector to filter patients >17 at index date
 pat_age = (patients.age_on(index_date) >= 17)
 
-
+#Or should I be creating a dataset column instead?
 
 #Create an object storing latest dates for Dx DM and Dx DM res for each patient
 
