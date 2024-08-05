@@ -38,7 +38,7 @@ dataset.registered= practice_registrations.for_patient_on(index_date).exists_for
 ##dataset.define_population(registered)
 
 #Create a boolean vector to filter patients >17 at index date and add it to the dataset
-dataset.pat_age = (patients.age_on(index_date) >= 17)
+dataset.pat_age = (patients.age_on(index_date))
 
 #Create an object storing latest dates for Dx DM and Dx DM res for each patient
 
@@ -55,12 +55,12 @@ dataset.latest_dmres= clinical_events.where(clinical_events.snomedct_code.is_in(
 ###Latest diabetes diagnosis is not followed by a diabetes resolved code.
 ###Have a diabetes diagnosis in the patient record up to and including the achievement date.
 
-dm_reg_r1= (dataset.latest_dmres < dataset.latest_dm) | (dataset.latest_dm.is_not_null() & dataset.latest_dmres.is_null())
+dm_reg_r1= (dataset.latest_dmres < index_date) & ((dataset.latest_dmres < dataset.latest_dm) | (dataset.latest_dm.is_not_null() & dataset.latest_dmres.is_null()))
 
 ##Rule 2
 ### Reject patients passed to this rule who are aged under 17 years old on the achievement date. Select the remaining patients.
 
-dm_reg_r2= dataset.pat_age
+dm_reg_r2= dataset.pat_age >= 17
 
 # Create the population
 dataset.define_population(registered & dm_reg_r1 & dm_reg_r2)
