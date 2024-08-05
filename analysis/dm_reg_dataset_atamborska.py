@@ -1,27 +1,27 @@
-# What do we need to write in the yalm.py file to "load" ehrql? ?opensafely exec ehrql:v1 generate-dataset analysis/dataset_definition.py
-
 #Import functions that will be used for dataset definition
 from ehrql import create_dataset
 from ehrql import codelist_from_csv
+from ehrql import Path
 
 #Import the tables of the variables which you need to define the dataset
 from ehrql.tables.tpp import patients, practice_registrations, clinical_events
 
 ## could use from ehrql.tables.core or from ehrql.tables.emis
 
-#Create an empty dataset - we will be adding columns to this, based on which we filter data
+#Create an empty dataset - we will be adding columns to this, based on which we will filter data
 dataset = create_dataset()
 
 #Create objects containing codelists - these will be used to define the dataset
 codelist_path= Path("codelists")
-dm_cod= codelist_from_csv("codelist_path/ nhsd-primary-care-domain-refsets-dm_cod.csv",
+dm_cod= codelist_from_csv(codelist_path/ "nhsd-primary-care-domain-refsets-dm_cod.csv", 
                           column="code",)
-dmres_cod= codelist_from_csv("codelist_path/nhsd-primary-care-domain-refsets-dm_codres.csv",
-                            column="code",)
+dmres_cod= codelist_from_csv(codelist_path/"nhsd-primary-care-domain-refsets-dmres_cod.csv", 
+                             column="code",)
+
 # Simpler:
 dm_cod= codelist_from_csv("codelists/nhsd-primary-care-domain-refsets-dm_cod.csv",
                           column="code",)
-dmres_cod= codelist_from_csv("codelists/nhsd-primary-care-domain-refsets-dm_codres.csv",
+dmres_cod= codelist_from_csv("codelists/nhsd-primary-care-domain-refsets-dmres_cod.csv",
                             column="code",)
 
 #Create index date 
@@ -34,28 +34,20 @@ registered = practice_registrations.for_patient_on(index_date).exists_for_patien
 ##So first, we need to add a column to the dataset which defines which patients are registered
 dataset.registered= practice_registrations.for_patient_on(index_date).exists_for_patient()
 
-# And only - then : Filter population to those registered
-dataset.define_population(registered)
+# And only - then : Filter population to those registered - however, define_population can only be used once per script - so we will add it to the rules at the end
+##dataset.define_population(registered)
 
-#Create a boolean vector to filter patients >17 at index date
-pat_age = (patients.age_on(index_date) >= 17)
+#Create a boolean vector to filter patients >17 at index date and add it to the dataset
+dataset.pat_age = (patients.age_on(index_date) >= 17)
 
 #Create an object storing latest dates for Dx DM and Dx DM res for each patient
 
-## Select the latest date with the diabetes code
-latest_dm= clinical_events.where(clinical_events.dmd_code.is_in(dm_cod)).
-sort_by(clinical_events.date).
-last_for_patient().date
-
-## Select the latest date with the diabetes resolved code
-latest_dmres= clinical_events.where(clinical_events.dmd_code.is_in(dmres_cod)).
-sort_by(clinical_events.date).
-last_for_patient().date
+## Select the latest date with the diabetes code and add it to the dataset
+dataset.latest_dm= clinical_events.where(clinical_events.snomedct_code.is_in(dm_cod)).sort_by(clinical_events.date).last_for_patient().date
 
 
-## Add these columns to the dataset
-dataset.latest_dm= latest_dm
-dataset.latest_dmres= latest_dmres
+## Select the latest date with the diabetes resolved code and add it to the dataset
+dataset.latest_dmres= clinical_events.where(clinical_events.snomedct_code.is_in(dmres_cod)).sort_by(clinical_events.date).last_for_patient().date
 
 #Define the dataset (=cohort) - using the rules
 
@@ -63,17 +55,12 @@ dataset.latest_dmres= latest_dmres
 ###Latest diabetes diagnosis is not followed by a diabetes resolved code.
 ###Have a diabetes diagnosis in the patient record up to and including the achievement date.
 
-dm_reg_r1= (dataset.latest_dmres < dataset.latest_dm) | 
-(dataset.latest_dm.is_not_null() & dataset.latest_dmres.is_null())
+dm_reg_r1= (dataset.latest_dmres < dataset.latest_dm) | (dataset.latest_dm.is_not_null() & dataset.latest_dmres.is_null())
 
 ##Rule 2
 ### Reject patients passed to this rule who are aged under 17 years old on the achievement date. Select the remaining patients.
 
-dm_reg_r2= dataset.pat_age == T
-
-
+dm_reg_r2= dataset.pat_age
 
 # Create the population
-dataset.define_population(dm_reg_r1 & dm_reg_r2)
-#vs. dataset.define_population(patients.date_of_birth < "1990-01-01")
-
+dataset.define_population(registered & dm_reg_r1 & dm_reg_r2)
