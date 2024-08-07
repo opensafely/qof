@@ -1,3 +1,16 @@
 {
-  "files": {}
+  "files": {
+    "nhsd-primary-care-domain-refsets-dm_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/dm_cod/77af4a2f",
+      "url": "https://www.opencodelists.org/codelist/nhsd-primary-care-domain-refsets/dm_cod/77af4a2f/",
+      "downloaded_at": "2024-07-26 14:15:08.632185Z",
+      "sha": "ce6f9083aa89bfe6935159ffc66755d4439ff0de"
+    },
+    "nhsd-primary-care-domain-refsets-dmres_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/dmres_cod/2978f44e",
+      "url": "https://www.opencodelists.org/codelist/nhsd-primary-care-domain-refsets/dmres_cod/2978f44e/",
+      "downloaded_at": "2024-07-26 14:15:08.717465Z",
+      "sha": "57682a6345da78472609f01f1ca065ace27fcb43"
+    }
+  }
 }
