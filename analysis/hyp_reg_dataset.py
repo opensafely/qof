@@ -22,9 +22,6 @@ dataset = create_dataset()
 
 ### variables ###
 
-# age of the patient in full years at the achievement date
-dataset.pat_age = patients.age_on(index_date)
-
 # date of the most recent hypertension diagnosis up to and including the achievement date
 dataset.hyplat_dat = (
     clinical_events.where(clinical_events.snomedct_code.is_in(hyp_cod) & clinical_events.date.is_on_or_before(index_date))
@@ -52,5 +49,5 @@ dataset.hyp_reg_r1 = dataset.hyplat_dat.is_not_null() & dataset.hypres_dat.is_nu
 ### defining population ###
 has_registration = practice_registrations.for_patient_on(index_date).exists_for_patient()
 dataset.define_population(
-    (has_registration) & ~(patients.age_on(index_date) < 17) & dataset.hyp_reg_r1
+    (has_registration) & dataset.hyp_reg_r1
     )

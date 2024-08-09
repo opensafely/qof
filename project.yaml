@@ -15,7 +15,7 @@ actions:
       run: >
         ehrql:v1
         generate-dataset analysis/hyp_reg_dataset.py
-        --output output/hyp_reg/hyp017_viveck.csv.gz
+        --output output/hyp/hyp001_viveck.csv.gz
       outputs:
         highly_sensitive:
-          cohort: output/hyp_reg/hyp017_viveck.csv.gz
+          cohort: output/hyp/hyp001_viveck.csv.gz
