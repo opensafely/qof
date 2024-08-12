@@ -19,3 +19,13 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/dm_reg/dm017_viveck.csv.gz
+
+  generate_dm_reg_dataset_milan:
+    run: >
+      ehrql:v1 
+        generate-dataset analysis/dm_reg_dataset_milan.py
+        --test-data-file analysis/test_dm_reg_dataset_milan.py
+        --output output/dm/dm017_milan.csv.gz
+    outputs:
+      highly_sensitive:
+        cohort: output/dm/dm017_milan.csv.gz
