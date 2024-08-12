@@ -121,4 +121,20 @@ test_data = {
             "dm_reg_r2": False,
         },
     },
+       7: {
+              "patients": {"date_of_birth": date(1960, 1, 1)},
+              "practice_registrations": [
+                  {
+                      "start_date": date(1960, 1, 1),
+                  },
+              ],
+              "clinical_events": [
+                  {
+                      # First diabetes diagnosis (DM_COD)
+                      "date": date(2000, 6, 1),
+                      "snomedct_code": "82272006",
+                  },
+              ],
+              "expected_in_population": False,
+          },
 }
