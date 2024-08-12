@@ -11,6 +11,17 @@
       "url": "https://www.opencodelists.org/codelist/nhsd-primary-care-domain-refsets/hypres_cod/20200812/",
       "downloaded_at": "2024-08-07 08:59:50.630929Z",
       "sha": "8f94d85f3bb7977e96d742a6b0a48551e0f674a2"
+    "nhsd-primary-care-domain-refsets-dm_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/dm_cod/20210127",
+      "url": "https://www.opencodelists.org/codelist/nhsd-primary-care-domain-refsets/dm_cod/20210127/",
+      "downloaded_at": "2024-07-26 12:50:31.931734Z",
+      "sha": "ce6f9083aa89bfe6935159ffc66755d4439ff0de"
+    },
+    "nhsd-primary-care-domain-refsets-dmres_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/dmres_cod/20200812",
+      "url": "https://www.opencodelists.org/codelist/nhsd-primary-care-domain-refsets/dmres_cod/20200812/",
+      "downloaded_at": "2024-07-26 12:50:32.018856Z",
+      "sha": "57682a6345da78472609f01f1ca065ace27fcb43"
     }
   }
 }
