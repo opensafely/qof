@@ -39,3 +39,11 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/dm/dm017_milan.csv.gz
+
+  generate_hyp001_measures:
+    run: >
+      ehrql:v1 generate-measures analysis/hyp_reg_measures.py
+      --output output/hyp/hyp001_measures.csv
+    outputs:
+      moderately_sensitive:
+        measure: output/hyp/hyp001_measures.csv
