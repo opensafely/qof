@@ -39,3 +39,11 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/dm/dm017_milan.csv.gz
+  generate_dem_qof_measures_arina:
+    run: >
+      ehrql:v1
+      generate-measures analysis/dem_qof_measures_arina.py
+      --output output/dem/dem_qof_measures.csv.gz
+    outputs:
+      moderately_sensitive:
+        measure: output/dm/dem_qof_measures.csv.gz
