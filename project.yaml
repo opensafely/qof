@@ -43,7 +43,7 @@ actions:
     run: >
       ehrql:v1
       generate-measures analysis/dem_qof_measures_arina.py
-      --output output/dem/dem_qof_measures.csv.gz
+      --output output/dem/dem_qof_measures.csv
     outputs:
       moderately_sensitive:
-        measure: output/dem/dem_qof_measures.csv.gz
+        measure: output/dem/dem_qof_measures.csv
