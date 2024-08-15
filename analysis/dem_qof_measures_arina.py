@@ -46,11 +46,36 @@ was_registered = (
 measures = create_measures()
 
 measures.define_measure(
-    name="dem_qof_monthly",
-    numerator= has_dementia.is_not_null(),
-    denominator= was_registered.is_not_null(),
-    intervals=months(12).starting_on("2023-04-01"),
+    name = "dem_qof_monthly",
+    numerator = has_dementia.is_not_null(),
+    denominator = was_registered.is_not_null(),
+    intervals = months(12).starting_on("2023-04-01"),
 )
 
 # The output is a dataframe of measure name, interval_start, 
 # interval_end, ratio, numerator, denominator.
+
+# Analyse dementia rates by subrgoup (socio-economic status)
+
+from ehrql.tables.tpp import addresses
+
+imd_rounded = addresses.for_patient_on(INTERVAL.start_date).imd_rounded
+max_imd = 32844
+
+imd_quintile = case(
+    when(imd_rounded < int(max_imd * 1 / 5)).then(1),
+    when(imd_rounded < int(max_imd * 2 / 5)).then(2),
+    when(imd_rounded < int(max_imd * 3 / 5)).then(3),
+    when(imd_rounded < int(max_imd * 4 / 5)).then(4),
+    when(imd_rounded <= max_imd).then(5),
+)
+
+measures.define_measure(
+    name = "dem_qof_monthy_imd",
+    numerator = has_dementia.is_not_null(),
+    denominator = was_registered.is_not_null(),
+    group_by = {
+        "imd": imd_quintile
+    },
+    intervals = months(12).starting_on("2023-04-01"),
+)

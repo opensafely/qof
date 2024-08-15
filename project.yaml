@@ -46,4 +46,4 @@ actions:
       --output output/dem/dem_qof_measures.csv.gz
     outputs:
       moderately_sensitive:
-        measure: output/dm/dem_qof_measures.csv.gz
+        measure: output/dem/dem_qof_measures.csv.gz
