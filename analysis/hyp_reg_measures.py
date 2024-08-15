@@ -3,6 +3,7 @@ from ehrql.tables.tpp import (
     clinical_events, 
     patients,
     practice_registrations,
+    addresses
 )
 
 # Hypertension codes
@@ -39,8 +40,6 @@ hypres_dat = (
     .date
 )
 
-hyp_reg_r1 = hyplat_dat.is_not_null() & hypres_dat.is_null() | (hyplat_dat > hypres_dat)
-
 age = patients.age_on(INTERVAL.start_date)
 age_band = case(
     when((age >= 0) & (age < 20)).then("0-19"),
@@ -50,12 +49,39 @@ age_band = case(
     when(age >= 80).then("80+"),
 )
 
+imd = addresses.for_patient_on(INTERVAL.end_date).imd_rounded
+imd_quintile = case(
+    when((imd >=0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
+    when(imd < int(32844 * 2 / 5)).then("2"),
+    when(imd < int(32844 * 3 / 5)).then("3"),
+    when(imd < int(32844 * 4 / 5)).then("4"),
+    when(imd < int(32844 * 5 / 5)).then("5 (least deprived)"),
+    otherwise="unknown"
+)
+
+
+# proportion of patients per month who were successfully treated for hypertension grouped by age band and index of multiple deprivation
+# Could be a useful measure to look at which age groups / imd are likely to get a resolved diagnosis (access to care) 
 measures.define_measure(
     name="resolved_diagnosis_by_age",
     numerator=hypres_dat.is_not_null(),
     denominator=patients.exists_for_patient(),
     group_by={
         "age_band": age_band,
+        "imd": imd_quintile,
     },
-    intervals=months(12).starting_on("2023-04-01"),
+    intervals=months(6).starting_on("2023-04-01"),
+)
+
+# proportion of patients per month who were diagnosed for hypertension grouped by age band and index of multiple deprivation
+# Could be a useful measure to look at which age groups / imd are likely to get diagnosed(access to care and potentially contributing risk factors to positive diagnosis) 
+measures.define_measure(
+    name="diagnosis_by_age",
+    numerator=hyplat_dat.is_not_null(),
+    denominator=patients.exists_for_patient(),
+    group_by={
+        "age_band": age_band,
+        "imd": imd_quintile,
+    },
+    intervals=months(6).starting_on("2023-04-01"),
 )
