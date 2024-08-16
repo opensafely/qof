@@ -39,3 +39,8 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/dm/dm017_milan.csv.gz
+  generate_dep_reg_measures_jaidip:
+    run: ehrql:v1 generate-measures analysis/dep_reg_measures_jaidip.py --output output/dep/dep_jaidip.csv.gz
+    outputs:
+      highly_sensitive:
+        measure: output/dep/dep_jaidip.csv.gz
