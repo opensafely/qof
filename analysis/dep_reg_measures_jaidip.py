@@ -1,4 +1,4 @@
-from ehrql import INTERVAL, create_measures, months, codelist_from_csv
+from ehrql import INTERVAL, create_measures, months, codelist_from_csv, case, when
 from ehrql.tables.tpp import *
 
 # instantiate measures
@@ -55,10 +55,22 @@ dep1_reg_r2 = PAT_AGE >= 18
 # Define measures
 dep_in_interval = DEPR_DAT.is_during(INTERVAL)
 
+# Stratification groups
+sex = patients.sex
+age_band = case(
+    when((PAT_AGE >= 18) & (PAT_AGE <= 21)).then("Young adult"),
+    when((PAT_AGE >= 22) & (PAT_AGE <= 64)).then("Adult"),
+    when(PAT_AGE >= 65).then("Elderly")
+)
+
 # Create measures
 measures.define_measure(
     name = 'Monthly_Prevalence',
     numerator = dep_in_interval,
     denominator = has_registration & dep1_reg_r1 & dep1_reg_r2,
-    intervals = months(12).starting_on(qs_start_date)
+    intervals = months(12).starting_on(qs_start_date),
+    group_by = {
+        'Sex': sex,
+        'Age': age_band
+    }
 )
