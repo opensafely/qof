@@ -11,6 +11,12 @@ actions:
       highly_sensitive:
         dataset: output/dataset.csv.gz
 
+  generate_registry_dm_jaidip:
+    run: ehrql:v1 generate-dataset analysis/dm_reg_dataset_jaidip_gill.py --output output/dm/registry_dm_jaidip.csv.gz
+    outputs:
+      highly_sensitive:
+        dataset: output/dm/registry_dm_jaidip.csv.gz
+        
   generate_hyp_reg_dataset:
       run: >
         ehrql:v1
@@ -44,4 +50,3 @@ actions:
     outputs:
       highly_sensitive:
         dataset: output/dep/dep_reg_dataset.csv.gz
-  
