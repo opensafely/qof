@@ -47,3 +47,11 @@ actions:
     outputs:
       moderately_sensitive:
         measure: output/dem/dem_qof_measures.csv
+visualise_dem_rates:
+ run: > 
+   r: analysis/dem_plots_arina.R
+ needs: [generate_dem_qof_measures_arina]
+ outputs:
+   moderately_sensitive:
+     measure: output/dem/dem_rates.png
+     output/dem/dem_rates_imd.png
