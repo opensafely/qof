@@ -39,6 +39,7 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/dm/dm017_milan.csv.gz
+
   generate_dem_qof_measures_arina:
     run: >
       ehrql:v1
@@ -47,11 +48,12 @@ actions:
     outputs:
       moderately_sensitive:
         measure: output/dem/dem_qof_measures.csv
+
 visualise_dem_rates:
  run: > 
    r: analysis/dem_plots_arina.R
  needs: [generate_dem_qof_measures_arina]
  outputs:
    moderately_sensitive:
-     measure: output/dem/dem_rates.png
-     output/dem/dem_rates_imd.png
+     unstratified dementia rates: output/dem/dem_rates.png
+     dementia rates by imd: output/dem/dem_rates_imd.png
