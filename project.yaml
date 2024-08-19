@@ -45,3 +45,8 @@ actions:
     outputs:
       highly_sensitive:
         cohort: output/dm/dm017_milan.csv.gz
+  generate_dep_reg_dataset:
+    run: ehrql:v1 generate-dataset analysis/dep_reg_dataset.py --output output/dep/dep_reg_dataset.csv.gz
+    outputs:
+      highly_sensitive:
+        dataset: output/dep/dep_reg_dataset.csv.gz
