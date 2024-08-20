@@ -1,4 +1,4 @@
-# Question - can we test the dataset developed via the measures framework?
+# Measures framework cannot be tested in this way - retire the script
 # Run this using the command: opensafely exec ehrql:v1 assure analysis test_dem_qof_measures_arina.py
 
 from datetime import date

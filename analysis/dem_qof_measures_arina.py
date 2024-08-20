@@ -27,6 +27,19 @@ has_dementia = (
     .date
 )
 
+#Simpler version
+
+has_dementia = (
+    clinical_events.where(
+        (clinical_events.date.is_on_or_before(INTERVAL.end_date))
+        & (clinical_events.snomedct_code.is_in(DEM_COD))
+        )
+        .sory_by(clinical_events.date)
+        .last_for_patient()
+        .date
+)
+
+
 ## Denominator - number of people with practice registration before the beginning of the interval 
 ## and with no deregsotration or with reregistration after the end of each interval
 was_registered = (
@@ -40,7 +53,8 @@ was_registered = (
     .start_date
 )
 
-# Possibly another way of expressing: practice_registrations.for_patient_on(index_date).exists_for_patient() 
+# Simpler
+was_registered = practice_registrations.spanning(INTERVAL.start_date, INTERVAL.end_date).exists_for_patient()
 
 # Create measures framework
 measures = create_measures()
