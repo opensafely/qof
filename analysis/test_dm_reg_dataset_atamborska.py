@@ -34,7 +34,7 @@ test_data = {
             "pat_age": 32,
             "registered": True,
             "latest_dm": date(2004, 1, 17),
-            "latest_dm_res": None,
+            "latest_dmres": None,
         },
     }
 }

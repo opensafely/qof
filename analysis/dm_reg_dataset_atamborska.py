@@ -75,7 +75,7 @@ dataset.latest_dmres = (
 ###Latest diabetes diagnosis is not followed by a diabetes resolved code.
 ###Have a diabetes diagnosis in the patient record up to and including the achievement date.
 
-dm_reg_r1 = dataset.latest_dm.is_not_null() & (dataset.latest_dm < index_date) & (
+dm_reg_r1 = (dataset.latest_dm.is_not_null()) & (dataset.latest_dm < index_date) & (
     (dataset.latest_dmres < dataset.latest_dm)
     | dataset.latest_dmres.is_null()
 )
