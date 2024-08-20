@@ -6,7 +6,9 @@ expectations:
 
 actions:
   generate_dataset:
-    run: ehrql:v1 generate-dataset analysis/dm_reg_dataset_atamborska.py --output output/dataset.csv.gz
+    run: ehrql:v1 
+      generate-dataset analysis/dm_reg_dataset_atamborska.py 
+      --output output/dm/dm_reg_atamborska.csv.gz
     outputs:
       highly_sensitive:
-        dataset: output/dataset.csv.gz
+        dataset: output/dm/dm_reg_atamborska.csv.gz
