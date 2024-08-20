@@ -24,18 +24,22 @@ measures = create_measures()
 
 ### variables ###
 
+selected_events = clinical_events.where(
+    clinical_events.date.is_on_or_before(INTERVAL.end_date)
+)
+
 # date of the most recent hypertension diagnosis up to and including the achievement date
 hyplat_dat = (
-    clinical_events.where(clinical_events.snomedct_code.is_in(hyp_cod) & clinical_events.date.is_on_or_before(INTERVAL.end_date))
-    .sort_by(clinical_events.date)
+    selected_events.where(selected_events.snomedct_code.is_in(hyp_cod))
+    .sort_by(selected_events.date)
     .last_for_patient()
     .date
 )
 
 # date of the most recent hypertension diagnosis resolved code recorded after the most recent hypertension diagnosis and up to and including the achievement date
 hypres_dat = (
-    clinical_events.where(clinical_events.snomedct_code.is_in(hypres_cod) & clinical_events.date.is_on_or_before(INTERVAL.end_date))
-    .sort_by(clinical_events.date)
+    selected_events.where(selected_events.snomedct_code.is_in(hypres_cod))
+    .sort_by(selected_events.date)
     .last_for_patient()
     .date
 )
@@ -49,15 +53,15 @@ age_band = case(
     when(age >= 80).then("80+"),
 )
 
-imd = addresses.for_patient_on(INTERVAL.end_date).imd_rounded
-imd_quintile = case(
-    when((imd >=0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
-    when(imd < int(32844 * 2 / 5)).then("2"),
-    when(imd < int(32844 * 3 / 5)).then("3"),
-    when(imd < int(32844 * 4 / 5)).then("4"),
-    when(imd < int(32844 * 5 / 5)).then("5 (least deprived)"),
-    otherwise="unknown"
-)
+# imd = addresses.for_patient_on(INTERVAL.end_date).imd_rounded
+# imd_quintile = case(
+#     when((imd >=0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
+#     when(imd < int(32844 * 2 / 5)).then("2"),
+#     when(imd < int(32844 * 3 / 5)).then("3"),
+#     when(imd < int(32844 * 4 / 5)).then("4"),
+#     when(imd < int(32844 * 5 / 5)).then("5 (least deprived)"),
+#     otherwise="unknown"
+# )
 
 
 # proportion of patients per month who were successfully treated for hypertension grouped by age band and index of multiple deprivation
@@ -68,9 +72,9 @@ measures.define_measure(
     denominator=patients.exists_for_patient(),
     group_by={
         "age_band": age_band,
-        "imd": imd_quintile,
+        "sex": patients.sex,
     },
-    intervals=months(6).starting_on("2023-04-01"),
+    intervals=months(12).starting_on("2023-04-01"),
 )
 
 # proportion of patients per month who were diagnosed for hypertension grouped by age band and index of multiple deprivation
@@ -81,7 +85,7 @@ measures.define_measure(
     denominator=patients.exists_for_patient(),
     group_by={
         "age_band": age_band,
-        "imd": imd_quintile,
+        "sex": patients.sex,
     },
-    intervals=months(6).starting_on("2023-04-01"),
+    intervals=months(12).starting_on("2023-04-01"),
 )
