@@ -44,13 +44,10 @@ dataset.registered = practice_registrations.for_patient_on(
     index_date
 ).exists_for_patient()
 
-# And only - then : Filter population to those registered - however, define_population can only be used once per script - so we will add it to the rules at the end
-##dataset.define_population(registered)
-
-# Create a boolean vector to filter patients >17 at index date and add it to the dataset
+# Derive patient age from the DOB and add to the dataset
 dataset.pat_age = patients.age_on(index_date)
 
-# Create an object storing latest dates for Dx DM and Dx DM res for each patient
+# Derive latest dates for Dx DM and Dx DM res for each patient, and add them to the dataset
 
 ## Select the latest date with the diabetes code and add it to the dataset
 dataset.latest_dm = (
@@ -72,16 +69,17 @@ dataset.latest_dmres = (
 # Define the dataset (=cohort) - using the rules
 
 ##Rule 1
-###Latest diabetes diagnosis is not followed by a diabetes resolved code.
-###Have a diabetes diagnosis in the patient record up to and including the achievement date.
+### Has a diabetes diagnosis before the index date
+### Latest diabetes diagnosis is not followed by a diabetes resolved code.
 
-dm_reg_r1 = (dataset.latest_dm.is_not_null()) & (dataset.latest_dm < index_date) & (
-    (dataset.latest_dmres < dataset.latest_dm)
-    | dataset.latest_dmres.is_null()
+dm_reg_r1 = (
+    (dataset.latest_dm.is_not_null())
+    & (dataset.latest_dm < index_date)
+    & ((dataset.latest_dmres < dataset.latest_dm) | dataset.latest_dmres.is_null())
 )
 
 ##Rule 2
-### Reject patients passed to this rule who are aged under 17 years old on the achievement date. Select the remaining patients.
+### Needs to be minimim 17 years old on the index date
 
 dm_reg_r2 = dataset.pat_age >= 17
 
