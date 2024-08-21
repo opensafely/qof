@@ -43,17 +43,20 @@ actions:
   generate_dem_qof_measures_arina:
     run: >
       ehrql:v1
-      generate-measures analysis/dem_qof_measures_arina.py
-      --output output/dem/dem_qof_measures.csv
+        generate-measures analysis/dem_qof_measures_arina.py
+        --output output/dem/dem_qof_measures.csv
     outputs:
       moderately_sensitive:
         measure: output/dem/dem_qof_measures.csv
 
-visualise_dem_rates:
- run: > 
-   r: analysis/dem_plots_arina.R
- needs: [generate_dem_qof_measures_arina]
- outputs:
-   moderately_sensitive:
-     unstratified dementia rates: output/dem/dem_rates.png
-     dementia rates by imd: output/dem/dem_rates_imd.png
+  visualise_dem_rates:
+    run: > 
+      r:
+        latest analysis/dem_plots_arina.R
+        --output output/dem/dem_rates.png
+        --output output/dem/dem_rates_imd.png
+  needs: [generate_dem_qof_measures_arina]
+  outputs:
+    moderately_sensitive:
+      unstratified dementia rates: output/dem/dem_rates.png
+      dementia rates by imd: output/dem/dem_rates_imd.png
