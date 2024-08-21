@@ -34,7 +34,7 @@ has_dementia = (
         (clinical_events.date.is_on_or_before(INTERVAL.end_date))
         & (clinical_events.snomedct_code.is_in(DEM_COD))
         )
-        .sory_by(clinical_events.date)
+        .sort_by(clinical_events.date)
         .last_for_patient()
         .date
 )
@@ -87,7 +87,7 @@ imd_quintile = case(
 measures.define_measure(
     name = "dem_qof_monthy_imd",
     numerator = has_dementia.is_not_null(),
-    denominator = was_registered.is_not_null(),
+    denominator = was_registered,
     group_by = {
         "imd": imd_quintile
     },
