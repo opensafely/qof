@@ -5,10 +5,50 @@ expectations:
   population_size: 1000
 
 actions:
-  generate_dataset:
+  generate_dm_reg_atamborska:
     run: ehrql:v1 
       generate-dataset analysis/dm_reg_dataset_atamborska.py 
       --output output/dm/dm_reg_atamborska.csv.gz
     outputs:
       highly_sensitive:
         dataset: output/dm/dm_reg_atamborska.csv.gz
+
+  generate_registry_dm_jaidip:
+    run: ehrql:v1 generate-dataset analysis/dm_reg_dataset_jaidip_gill.py --output output/dm/registry_dm_jaidip.csv.gz
+    outputs:
+      highly_sensitive:
+        dataset: output/dm/registry_dm_jaidip.csv.gz
+        
+  generate_hyp_reg_dataset:
+      run: >
+        ehrql:v1
+        generate-dataset analysis/hyp_reg_dataset.py
+        --test-data-file analysis/test_hyp_reg_dataset.py
+        --output output/hyp/hyp001_viveck.csv.gz
+      outputs:
+        highly_sensitive:
+          cohort: output/hyp/hyp001_viveck.csv.gz
+
+  generate_dm_reg_dataset_viveck:
+    run: >
+      ehrql:v1
+       generate-dataset analysis/dm_reg_dataset_viveck.py
+       --output output/dm/dm017_viveck.csv.gz
+    outputs:
+      highly_sensitive:
+        cohort: output/dm/dm017_viveck.csv.gz
+
+  generate_dm_reg_dataset_milan:
+    run: >
+      ehrql:v1 
+        generate-dataset analysis/dm_reg_dataset_milan.py
+        --test-data-file analysis/test_dm_reg_dataset_milan.py
+        --output output/dm/dm017_milan.csv.gz
+    outputs:
+      highly_sensitive:
+        cohort: output/dm/dm017_milan.csv.gz
+  generate_dep_reg_dataset:
+    run: ehrql:v1 generate-dataset analysis/dep_reg_dataset.py --output output/dep/dep_reg_dataset.csv.gz
+    outputs:
+      highly_sensitive:
+        dataset: output/dep/dep_reg_dataset.csv.gz
