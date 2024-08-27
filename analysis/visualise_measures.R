@@ -115,6 +115,7 @@ for (age_band in age_bands) {
   # Add the plot from loop to the list
   plot_list[[age_band]] <- p
 }
+ggsave("output/hyp/diagnosis_rates.png")
 
 "-------------"
 
@@ -146,4 +147,4 @@ for (age_band in age_bands) {
   plot_list2[[age_band]] <- p1
 }
 
-
+ggsave("output/hyp/resolved_rates.png")

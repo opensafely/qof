@@ -47,3 +47,15 @@ actions:
     outputs:
       moderately_sensitive:
         measure: output/hyp/hyp001_measures.csv
+
+  generate_hyp001_plots:
+    run: > 
+      r:latest
+        analysis/visualise_measures.R
+        --output output/hyp/resolved_rates.png
+        --output output/hyp/diagnosis_rates.png
+    needs: [generate_hyp001_measures]
+    outputs:
+      moderately_sensitive:
+        hyp_rates_resolved: output/hyp/resolved_rates.png
+        hyp_rates_diagnosis: output/hyp/diagnosis_rates.png
