@@ -24,11 +24,13 @@ ggsave("output/dem/dem_rates_imd.png")
 
 df %>%
 filter(is.na(imd)) %>%
-ggplot(aes(ymd(interval_start), y= ratio)) +
-geom_line()+
-labs (title = "Dementia prevalence over time, unstratfied", 
-x = "", 
-y ="Prevalence of dementia")+
+ggplot(aes (x = ymd(interval_start), y = ratio)) +
+geom_line() +
+labs (
+    title = "Dementia prevalence over time, unstratfied", 
+    x = NULL, 
+    y = "Prevalence of dementia"
+    ) +
 theme_light()
 
 ggsave("output/dem/dem_rates.png")

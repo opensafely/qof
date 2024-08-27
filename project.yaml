@@ -43,7 +43,7 @@ actions:
   generate_dem_reg_measures:
     run: >
       ehrql:v1
-        generate-measures analysis/dem_dem_reg_measures.py
+        generate-measures analysis/dem_reg_measures.py
         --output output/dem/dem_reg_measures.csv
     outputs:
       moderately_sensitive:
@@ -52,7 +52,7 @@ actions:
   visualise_dem_rates:
     run: > 
       r:latest
-        analysis/dem_plots_arina.R
+        analysis/dem_reg_plots.R
         --output output/dem/dem_reg_rates.png
         --output output/dem/dem_reg_rates_imd.png
     needs: [generate_dem_reg_measures]
