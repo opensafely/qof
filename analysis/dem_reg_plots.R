@@ -18,7 +18,7 @@ df %>%
     ) +
   theme_light()
 
-ggsave("output/dem/dem_rates_imd.png")
+ggsave("output/dem/dem_reg_rates_imd.png")
 
 # Dementia prevalence, unstratified
 
@@ -33,4 +33,4 @@ labs (
     ) +
 theme_light()
 
-ggsave("output/dem/dem_rates.png")
+ggsave("output/dem/dem_reg_rates.png")
