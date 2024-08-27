@@ -7,14 +7,16 @@ df <- read.csv("output/dem/dem_qof_measures.csv")
 
 # Dementia prevalence plot, stratified by IMD
 df %>%
-filter(!is.na(imd)) %>%
-ggplot(aes (x= ymd(interval_start), y= ratio, color = as.factor(imd))) +
-geom_line()+
-labs (title = "Dementia prevalence over time, per IMD group", 
-x = "", 
-y ="Prevalence of dementia",
-color= "Index of multiple depravation") +
-theme_light()
+  filter(!is.na(imd)) %>%
+  ggplot(aes (x = ymd(interval_start), y = ratio, color = as.factor(imd))) +
+  geom_line()+
+  labs (
+    title = "Dementia prevalence over time, per IMD group", 
+    x = NULL, 
+    y = "Prevalence of dementia",
+    color = "Index of multiple depravation"
+    ) +
+  theme_light()
 
 ggsave("output/dem/dem_rates_imd.png")
 
