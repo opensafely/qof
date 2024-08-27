@@ -1,7 +1,7 @@
 # Set up
 library(tidyverse)
 library(lubridate)
-df <- read.csv("output/dem/dem_qof_measures.csv")
+df <- read.csv("output/dem/dem_reg_measures.csv")
 
 # summary(df) - confirms that there are 37 missing ratios and 24 missing imds
 
