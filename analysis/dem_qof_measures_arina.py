@@ -63,7 +63,7 @@ was_registered = practice_registrations.spanning(
 measures = create_measures()
 
 measures.define_measure(
-    name="dem_qof_monthly",
+    name="dem_reg",
     numerator=has_dementia.is_not_null(),
     denominator=was_registered.is_not_null(),
     intervals=months(12).starting_on("2023-04-01"),
