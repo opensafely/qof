@@ -40,23 +40,23 @@ actions:
       highly_sensitive:
         cohort: output/dm/dm017_milan.csv.gz
 
-  generate_dem_qof_measures_arina:
+  generate_dem_reg_measures:
     run: >
       ehrql:v1
-        generate-measures analysis/dem_qof_measures_arina.py
-        --output output/dem/dem_qof_measures.csv
+        generate-measures analysis/dem_dem_reg_measures.py
+        --output output/dem/dem_reg_measures.csv
     outputs:
       moderately_sensitive:
-        dem_measures: output/dem/dem_qof_measures.csv
+        dem_reg_measures: output/dem/dem_reg_measures.csv
 
-  visualise_dem_rates_arina:
+  visualise_dem_rates:
     run: > 
       r:latest
         analysis/dem_plots_arina.R
-        --output output/dem/dem_rates.png
-        --output output/dem/dem_rates_imd.png
-    needs: [generate_dem_qof_measures_arina]
+        --output output/dem/dem_reg_rates.png
+        --output output/dem/dem_reg_rates_imd.png
+    needs: [generate_dem_reg_measures]
     outputs:
       moderately_sensitive:
-        dem_rates_unstratified: output/dem/dem_rates.png
-        dem_rates_imd: output/dem/dem_rates_imd.png
+        dem_reg_rates_unstratified: output/dem/dem_reg_rates.png
+        dem_reg_rates_imd: output/dem/dem_reg_rates_imd.png
