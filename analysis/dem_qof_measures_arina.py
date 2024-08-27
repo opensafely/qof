@@ -74,7 +74,6 @@ measures.define_measure(
 
 # Analyse dementia rates by subrgoup (socio-economic status)
 
-from ehrql.tables.tpp import addresses
 
 imd_rounded = addresses.for_patient_on(INTERVAL.start_date).imd_rounded
 max_imd = 32844
