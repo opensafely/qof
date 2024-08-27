@@ -5,7 +5,7 @@ from ehrql import codelist_from_csv
 from ehrql import INTERVAL, case, create_measures, months, when
 
 # 2) Import the tables of interest from TPP
-from ehrql.tables.tpp import patients, practice_registrations, clinical_events
+from ehrql.tables.tpp import patients, practice_registrations, clinical_events, addresses
 
 # 3) Import the codelists of interest
 DEM_COD = codelist_from_csv(
