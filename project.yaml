@@ -52,10 +52,8 @@ actions:
     run: > 
       r:latest
         analysis/visualise_measures.R
-        --output output/hyp/resolved_rates.png
-        --output output/hyp/diagnosis_rates.png
+        --output output/hyp/hyp_plot.png
     needs: [generate_hyp001_measures]
     outputs:
       moderately_sensitive:
-        hyp_rates_resolved: output/hyp/resolved_rates.png
-        hyp_rates_diagnosis: output/hyp/diagnosis_rates.png
+        hyp_plot: output/hyp/hyp_plot.png

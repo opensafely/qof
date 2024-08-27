@@ -1,150 +1,72 @@
 library(tidyverse)
-library(ggplot2)
-library(gridExtra)  # For arranging multiple plots
+library(patchwork)
+library(here)
 
 # Load data
-df_measures <- readr::read_csv(
-  here::here("output", "hyp", "hyp001_measures.csv")
-)
+df_measures <- read_csv(
+  here("output", "hyp", "hyp001_measures.csv")) %>%
+  replace_na(list(age_band = "(Missing)")) %>%
+  mutate(
+    start_date = as.Date(interval_start, format = "%Y-%m-%d"),
+    end_date = as.Date(interval_end, format = "%Y-%m-%d"),
+    age_band = factor(
+      age_band,
+      levels = c("0-19", "20-39", "40-59", "60-79", "80+", "(Missing)"),
+      labels = c("0-19", "20-39", "40-59", "60-79", "80+", "(Missing)")
+      )
+  )
 
-df_measures <- df_measures %>%
-    mutate(
-        start_date = as.Date(interval_start, format = "%Y-%m-%d"),
-        end_date = as.Date(interval_end, format = "%Y-%m-%d")
-    )
+plot_hypres <- df_measures %>%
+  filter(measure == "resolved_diagnosis_by_age") %>%
+  ggplot(aes(
+    x = end_date,
+    y = ratio,
+    colour = age_band,
+  )) +
+  geom_point() +
+  geom_line(alpha = .5) +
+  labs(
+    title = NULL,
+    x = NULL,
+    y = "Patients with hypertension resolved code",
+    colour = "Age band"
+  ) +
+  scale_y_continuous(
+    labels = scales::label_percent(),
+    limits = c(0, 1)
+  ) +
+  facet_wrap(~ factor(
+    sex,
+    levels = c("female", "male", "intersex", "unknown"),
+    labels = c("Female", "Male", "Intersex", "Unknown")
+  ))
 
-df_resolved <- df_measures %>%
-    filter(measure == "resolved_diagnosis_by_age") %>%
-    mutate(age_band = case_when(
-        is.na(age_band) ~ "(Missing)",
-        TRUE ~ age_band
-        ),
-        sex = case_when(
-            sex == "unknown" ~ "(Missing)",
-            TRUE ~ sex
-        ),
-        ratio = case_when(
-        is.na(ratio) ~ 0,
-        TRUE ~ ratio
-        )
-    ) %>%
-    arrange(end_date)
+plot_hyp <- df_measures %>%
+  filter(measure == "diagnosis_by_age") %>%
+  ggplot(aes(
+    x = end_date,
+    y = ratio,
+    colour = age_band,
+  )) +
+  geom_point() +
+  geom_line(alpha = .5) +
+  labs(
+    title = NULL,
+    x = NULL,
+    y = "Patients with hypertension code",
+    colour = "Age band"
+  ) +
+  scale_y_continuous(
+    labels = scales::label_percent(),
+    limits = c(0, 1)
+  ) +
+  facet_wrap(~ factor(
+    sex,
+    levels = c("female", "male", "intersex", "unknown"),
+    labels = c("Female", "Male", "Intersex", "Unknown")
+  ))
 
-df_diagnosis <- df_measures %>%
-    filter(measure == "diagnosis_by_age") %>%
-    mutate(age_band = case_when(
-        is.na(age_band) ~ "(Missing)",
-        TRUE ~ age_band
-        ),
-        sex = case_when(
-            sex == "unknown" ~ "(Missing)",
-            TRUE ~ sex
-        ),
-        ratio = case_when(
-        is.na(ratio) ~ 0,
-        TRUE ~ ratio
-        )
-    ) %>%
-    arrange(end_date)
+plot_hyp <- (plot_hyp / plot_hypres) +
+  plot_layout(guides = "collect")
 
-# df_resolved_tidy <- df_resolved %>%
-#     pivot_wider(
-#         id_cols = c(start_date, end_date, sex),
-#         names_from = age_band,
-#         values_from = ratio,
-#         values_fill = list(ratio = 0)
-#     ) %>%
-#     select(
-#         start_date,
-#         end_date,
-#         sex,
-#         `0-19`,
-#         `20-39`,
-#         `40-59`,
-#         `60-79`,
-#         `80+`
-#     ) %>%
-#     group_by(sex) %>%
-#     arrange(end_date)
-
-
-# df_diagnosis_tidy <- df_diagnosis %>%
-#     pivot_wider(
-#         id_cols = c(start_date, end_date, sex),
-#         names_from = age_band,
-#         values_from = ratio,
-#         values_fill = list(ratio = 0)
-#     ) %>%
-#     select(
-#         start_date, 
-#         end_date,
-#         sex, 
-#         `0-19`, 
-#         `20-39`, 
-#         `40-59`, 
-#         `60-79`, 
-#         `80+`
-#     ) %>%
-#     group_by(sex) %>%
-#     arrange(end_date)
-
-# Filter out rows where age_band and sex is "Missing"
-df_diagnosis_filtered <- df_diagnosis %>%
-  filter(age_band != "(Missing)" & sex != "(Missing)")
-
-# Create a list to store the plots
-plot_list <- list()
-
-# Unique age bands
-age_bands <- c("0-19", "20-39", "40-59", "60-79", "80+")
-
-# Generate plots for each age band
-for (age_band in age_bands) {
-  # Filter data for the current age band
-  df_age_band <- df_diagnosis_filtered %>%
-    filter(age_band == !!age_band)
-  # Create the plot for the current age band
-  p <- ggplot(df_age_band, aes(x = end_date, y = ratio, color = sex, group = sex)) +
-    geom_line() +
-    labs(title = paste("Diagnosis Ratio for Age Band:", age_band),
-         x = "End Date",
-         y = "Diagnosis Ratio",
-         color = "Gender") +
-    theme_minimal()
-  
-  # Add the plot from loop to the list
-  plot_list[[age_band]] <- p
-}
-ggsave("output/hyp/diagnosis_rates.png")
-
-"-------------"
-
-# Filter out rows where age_band and sex is "Missing"
-df_resolved_filtered <- df_resolved %>%
-  filter(age_band != "(Missing)" & sex != "(Missing)")
-
-# Create a list to store the plots
-plot_list2 <- list()
-
-# Unique age bands
-age_bands <- c("0-19", "20-39", "40-59", "60-79", "80+")
-
-# Generate plots for each age band
-for (age_band in age_bands) {
-  # Filter data for the current age band
-  df_age_band <- df_resolved_filtered %>%
-    filter(age_band == !!age_band)
-  # Create the plot for the current age band
-  p1 <- ggplot(df_age_band, aes(x = end_date, y = ratio, color = sex, group = sex)) +
-    geom_line() +
-    labs(title = paste("Resolved Diagnosis Ratio for Age Band:", age_band),
-         x = "End Date",
-         y = "Resolved Ratio",
-         color = "Gender") +
-    theme_minimal()
-  
-  # Add the plot from loop to the list
-  plot_list2[[age_band]] <- p1
-}
-
-ggsave("output/hyp/resolved_rates.png")
+ggsave("output/hyp/hyp_plot.png", width = 8, height = 8)
