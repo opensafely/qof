@@ -29,6 +29,18 @@
       "url": "https://www.opencodelists.org/codelist/nhsd-primary-care-domain-refsets/dem_cod/20210127/",
       "downloaded_at": "2024-08-14 12:29:45.066791Z",
       "sha": "96defdd5b5345aaed6c6e2e71188c966288e4731"
+    },
+    "nhsd-primary-care-domain-refsets-depr_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/depr_cod/20210127",
+      "url": "https://www.opencodelists.org/codelist/nhsd-primary-care-domain-refsets/depr_cod/20210127/",
+      "downloaded_at": "2024-08-15 09:59:25.628001Z",
+      "sha": "fe8bce134ed68b81aee0a15f8f258bfb31fc0c1c"
+    },
+    "nhsd-primary-care-domain-refsets-depres_cod.csv": {
+      "id": "nhsd-primary-care-domain-refsets/depres_cod/20200812",
+      "url": "https://www.opencodelists.org/codelist/nhsd-primary-care-domain-refsets/depres_cod/20200812/",
+      "downloaded_at": "2024-08-15 11:06:05.198120Z",
+      "sha": "f76c7ec24e3149b2b8836269c01be415573c6b52"
     }
   }
 }

@@ -5,12 +5,20 @@ expectations:
   population_size: 1000
 
 actions:
-  generate_dataset:
-    run: ehrql:v1 generate-dataset analysis/dataset_definition.py --output output/dataset.csv.gz
+  generate_dm_reg_atamborska:
+    run: ehrql:v1 
+      generate-dataset analysis/dm_reg_dataset_atamborska.py 
+      --output output/dm/dm_reg_atamborska.csv.gz
     outputs:
       highly_sensitive:
-        dataset: output/dataset.csv.gz
+        dataset: output/dm/dm_reg_atamborska.csv.gz
 
+  generate_registry_dm_jaidip:
+    run: ehrql:v1 generate-dataset analysis/dm_reg_dataset_jaidip_gill.py --output output/dm/registry_dm_jaidip.csv.gz
+    outputs:
+      highly_sensitive:
+        dataset: output/dm/registry_dm_jaidip.csv.gz
+        
   generate_hyp_reg_dataset:
       run: >
         ehrql:v1
@@ -60,3 +68,14 @@ actions:
       moderately_sensitive:
         dem_reg_rates_unstratified: output/dem/dem_reg_rates.png
         dem_reg_rates_imd: output/dem/dem_reg_rates_imd.png
+
+  generate_dep_reg_measures_jaidip:
+    run: ehrql:v1 generate-measures analysis/dep_reg_measures_jaidip.py --output output/dep/dep_jaidip.csv.gz
+    outputs:
+      highly_sensitive:
+        measure: output/dep/dep_jaidip.csv.gz
+  generate_dep_reg_dataset:
+    run: ehrql:v1 generate-dataset analysis/dep_reg_dataset.py --output output/dep/dep_reg_dataset.csv.gz
+    outputs:
+      highly_sensitive:
+        dataset: output/dep/dep_reg_dataset.csv.gz
