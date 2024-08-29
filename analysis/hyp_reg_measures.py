@@ -3,7 +3,6 @@ from ehrql.tables.tpp import (
     clinical_events, 
     patients,
     practice_registrations,
-    addresses
 )
 
 # Hypertension codes
@@ -18,8 +17,6 @@ hypres_cod = codelist_from_csv(
 )
 
 index_date = "2024-03-31"
-dataset = create_dataset()
-
 measures = create_measures()
 
 ### variables ###
@@ -44,6 +41,9 @@ hypres_dat = (
     .date
 )
 
+# Rule for patients with a hypertension code that has not been resolved
+hyp_reg_r1 = hyplat_dat.is_not_null() & hypres_dat.is_null() | (hyplat_dat > hypres_dat)
+
 age = patients.age_on(INTERVAL.start_date)
 age_band = case(
     when((age >= 0) & (age < 20)).then("0-19"),
@@ -53,23 +53,13 @@ age_band = case(
     when(age >= 80).then("80+"),
 )
 
-# imd = addresses.for_patient_on(INTERVAL.end_date).imd_rounded
-# imd_quintile = case(
-#     when((imd >=0) & (imd < int(32844 * 1 / 5))).then("1 (most deprived)"),
-#     when(imd < int(32844 * 2 / 5)).then("2"),
-#     when(imd < int(32844 * 3 / 5)).then("3"),
-#     when(imd < int(32844 * 4 / 5)).then("4"),
-#     when(imd < int(32844 * 5 / 5)).then("5 (least deprived)"),
-#     otherwise="unknown"
-# )
+registration = practice_registrations.for_patient_on(INTERVAL.end_date)
 
-
-# proportion of patients per month who were successfully treated for hypertension grouped by age band and index of multiple deprivation
-# Could be a useful measure to look at which age groups / imd are likely to get a resolved diagnosis (access to care) 
+# Measure defining the rate of patients with unresolved hypertension per age band and sex
 measures.define_measure(
-    name="resolved_diagnosis_by_age",
-    numerator=hypres_dat.is_not_null(),
-    denominator=patients.exists_for_patient(),
+    name="diagnosis_by_age",
+    numerator=hyp_reg_r1 == True,
+    denominator=registration.exists_for_patient(),
     group_by={
         "age_band": age_band,
         "sex": patients.sex,
@@ -77,12 +67,11 @@ measures.define_measure(
     intervals=months(12).starting_on("2023-04-01"),
 )
 
-# proportion of patients per month who were diagnosed for hypertension grouped by age band and index of multiple deprivation
-# Could be a useful measure to look at which age groups / imd are likely to get diagnosed(access to care and potentially contributing risk factors to positive diagnosis) 
+# Measure defining the rate of patients with resolved hypertension per age band and sex
 measures.define_measure(
-    name="diagnosis_by_age",
-    numerator=hyplat_dat.is_not_null(),
-    denominator=patients.exists_for_patient(),
+    name="resolved_by_age",
+    numerator=hyp_reg_r1 == False,
+    denominator=registration.exists_for_patient(),
     group_by={
         "age_band": age_band,
         "sex": patients.sex,
