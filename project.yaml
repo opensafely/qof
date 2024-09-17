@@ -53,7 +53,9 @@ actions:
       highly_sensitive:
         measure: output/dep/dep_jaidip.csv.gz
   generate_dep_reg_dataset:
-    run: ehrql:v1 generate-dataset analysis/dep_reg_dataset.py --output output/dep/dep_reg_dataset.csv.gz
+    run: ehrql:v1 generate-dataset analysis/dep_reg_dataset.py 
+          --output output/dep/dep_reg_dataset.csv.gz
+          --test-data-file analysis/test_dep_reg_dataset.py
     outputs:
       highly_sensitive:
         dataset: output/dep/dep_reg_dataset.csv.gz

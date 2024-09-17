@@ -61,4 +61,4 @@ dep1_reg_r1 = (
     )
 dep2_reg_r2 = dataset.pat_age >= 18
 
-dataset.define_population(has_registration & dep1_reg_r1 & dep2_reg_r2)
+dataset.define_population(has_registration & dep1_reg_r1 &dep2_reg_r2)
