@@ -55,8 +55,10 @@ dataset.pat_age = (patients
 # Latest episode of depression is not followed by a depression resolved code.
 # Must be aged 18 or over on the achievement date
 
-dep1_reg_r1 = ((dataset.depr_dat.is_on_or_after(min_date))
-               & (dataset.depres_dat.is_null()))
+dep1_reg_r1 = (
+    (dataset.depr_dat.is_on_or_after(min_date)) & 
+    ( (dataset.depres_dat.is_null()) | (dataset.depres_dat < dataset.depr_dat) )
+    )
 dep2_reg_r2 = dataset.pat_age >= 18
 
-dataset.define_population(has_registration & dep1_reg_r1 & dep2_reg_r2)
+dataset.define_population(has_registration & dep1_reg_r1 &dep2_reg_r2)
