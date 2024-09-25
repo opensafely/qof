@@ -79,3 +79,8 @@ actions:
     outputs:
       highly_sensitive:
         dataset: output/dep/dep_reg_dataset.csv.gz
+  generate_dep_viz:
+    run: r:latest analysis/vis_dep_measures.R --output output/dep/viz_dep_measures.png
+    outputs:
+      moderately_sensitive:
+        figure: output/dep/viz_dep_measures.png
