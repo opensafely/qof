@@ -1,9 +1,13 @@
 from datetime import date
+
+# 1) Import dataset from the dataset definition
 from dm_reg_dataset_milan import dataset
 
 # Patient data for the FY23/24 with index date = "2024-03-31"
 # Run the tests with the following command:
 # opensafely exec ehrql:v1 assure analysis/test_dm_reg_dataset_milan.py
+
+# 2) Add test cases to test the dataset definition
 
 test_data = {
     # Correctly not expected in population
