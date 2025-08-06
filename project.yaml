@@ -5,38 +5,15 @@ expectations:
   population_size: 1000
 
 actions:
-  generate_dm_reg_atamborska:
-    run: ehrql:v1 
-      generate-dataset analysis/dm_reg_dataset_atamborska.py 
-      --output output/dm/dm_reg_atamborska.csv.gz
-    outputs:
-      highly_sensitive:
-        dataset: output/dm/dm_reg_atamborska.csv.gz
-
-  generate_registry_dm_jaidip:
-    run: ehrql:v1 generate-dataset analysis/dm_reg_dataset_jaidip_gill.py --output output/dm/registry_dm_jaidip.csv.gz
-    outputs:
-      highly_sensitive:
-        dataset: output/dm/registry_dm_jaidip.csv.gz
-        
   generate_hyp_reg_dataset:
       run: >
         ehrql:v1
         generate-dataset analysis/hyp_reg_dataset.py
         --test-data-file analysis/test_hyp_reg_dataset.py
-        --output output/hyp/hyp001_viveck.csv.gz
+        --output output/hyp/hyp001.csv.gz
       outputs:
         highly_sensitive:
-          cohort: output/hyp/hyp001_viveck.csv.gz
-
-  generate_dm_reg_dataset_viveck:
-    run: >
-      ehrql:v1
-       generate-dataset analysis/dm_reg_dataset_viveck.py
-       --output output/dm/dm017_viveck.csv.gz
-    outputs:
-      highly_sensitive:
-        cohort: output/dm/dm017_viveck.csv.gz
+          cohort: output/hyp/hyp001.csv.gz
 
   generate_dm_reg_dataset_milan:
     run: >
@@ -48,32 +25,6 @@ actions:
       highly_sensitive:
         cohort: output/dm/dm017_milan.csv.gz
 
-  generate_dem_reg_measures:
-    run: >
-      ehrql:v1
-        generate-measures analysis/dem_reg_measures.py
-        --output output/dem/dem_reg_measures.csv
-    outputs:
-      moderately_sensitive:
-        dem_reg_measures: output/dem/dem_reg_measures.csv
-
-  visualise_dem_rates:
-    run: > 
-      r:latest
-        analysis/dem_reg_plots.R
-        --output output/dem/dem_reg_rates.png
-        --output output/dem/dem_reg_rates_imd.png
-    needs: [generate_dem_reg_measures]
-    outputs:
-      moderately_sensitive:
-        dem_reg_rates_unstratified: output/dem/dem_reg_rates.png
-        dem_reg_rates_imd: output/dem/dem_reg_rates_imd.png
-
-  generate_dep_reg_measures_jaidip:
-    run: ehrql:v1 generate-measures analysis/dep_reg_measures_jaidip.py --output output/dep/dep_jaidip.csv.gz
-    outputs:
-      highly_sensitive:
-        measure: output/dep/dep_jaidip.csv.gz
   generate_dep_reg_dataset:
     run: ehrql:v1 generate-dataset analysis/dep_reg_dataset.py --output output/dep/dep_reg_dataset.csv.gz
     outputs:
