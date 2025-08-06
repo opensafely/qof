@@ -15,18 +15,22 @@ actions:
         highly_sensitive:
           cohort: output/hyp/hyp001.csv.gz
 
-  generate_dm_reg_dataset_milan:
+  generate_dm_reg_dataset:
     run: >
       ehrql:v1 
-        generate-dataset analysis/dm_reg_dataset_milan.py
-        --test-data-file analysis/test_dm_reg_dataset_milan.py
-        --output output/dm/dm017_milan.csv.gz
+        generate-dataset analysis/dm_reg_dataset.py
+        --test-data-file analysis/test_dm_reg_dataset.py
+        --output output/dm/dm017.csv.gz
     outputs:
       highly_sensitive:
-        cohort: output/dm/dm017_milan.csv.gz
+        cohort: output/dm/dm017.csv.gz
 
   generate_dep_reg_dataset:
-    run: ehrql:v1 generate-dataset analysis/dep_reg_dataset.py --output output/dep/dep_reg_dataset.csv.gz
+    run: 
+      ehrql:v1 
+        generate-dataset analysis/dep_reg_dataset.py
+        --test-data-file analysis/test_dep_reg_dataset.py 
+        --output output/dep/dep_reg_dataset.csv.gz
     outputs:
       highly_sensitive:
         dataset: output/dep/dep_reg_dataset.csv.gz
