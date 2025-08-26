@@ -1,8 +1,15 @@
 from datetime import date
+
+# 1) Import dataset from the dataset definition
 from hyp_reg_dataset import dataset
 
-test_data = {
+# Patient data for the FY23/24 with index date = "2024-03-31"
+# Run the tests with the following command:
+# opensafely exec ehrql:v1 assure analysis/test_hyp_reg_dataset.py
 
+# 2) Add test cases to test the dataset definition
+
+test_data = {
     # Correctly not expected in population
     # No clinical events
     1: {
